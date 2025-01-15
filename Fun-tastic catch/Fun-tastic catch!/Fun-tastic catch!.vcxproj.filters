@@ -23,5 +23,13 @@
     <Image Include="menu_bg.png">
       <Filter>Source Files</Filter>
     </Image>
+    <Image Include="about us.png">
+      <Filter>Source Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="button sound.wav">
+      <Filter>Source Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

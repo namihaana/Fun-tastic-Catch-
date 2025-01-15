@@ -67,7 +67,11 @@
     <ClCompile Include="iMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="about us.png" />
     <Image Include="menu_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="button sound.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

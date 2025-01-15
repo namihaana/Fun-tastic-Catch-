@@ -1,4 +1,12 @@
+/*
+16 Jan, 2025
+added about us image
+added button click sounds
+*/
+
+
 #include "iGraphics.h"
+#include <windows.h> //sounds 16jan
 
 // Screen size
 int screenSizeX = 1000;
@@ -40,28 +48,41 @@ void initializeButtons() {
 	}
 }
 
-//back button
-void drawBackButton(){
-	
-	if (currentScreen != MENU){
+//back button 16jan
+void drawBackButton() {
+	if (currentScreen != MENU) {
+		// Draw button background
 		if (backButton.isHovered) {
-			iSetColor(61, 111, 255);  // Hover color
+			iSetColor(0, 102, 204);  // Hover color next page
 			iFilledRectangle(backButton.x - 10, backButton.y - 5, backButton.width + 20, backButton.height + 10);
 		}
 		else {
 			iSetColor(86, 164, 230);   // Normal color
 			iFilledRectangle(backButton.x, backButton.y, backButton.width, backButton.height);
 		}
+
+		// Center the text
 		iSetColor(255, 255, 255);  // White text
+
+		int textWidth = 8 * strlen("Back"); // Approximate text width
+		int textX = backButton.x + (backButton.width - textWidth) / 2;
+
+		int textHeight = 12; // Approximate text height for HELVETICA_18
+		int textY = backButton.y + (backButton.height - textHeight) / 2;
+
+		// Shadow and hover effect
+		// Draw "Back" text
 		if (backButton.isHovered) {
-			iText(backButton.width / 2, backButton.y + backButton.height / 2 - 5, "Back", GLUT_BITMAP_HELVETICA_18);
+			iText(textX, textY, "Back", GLUT_BITMAP_9_BY_15); // Larger font on hover
 		}
 		else {
-			iText(backButton.width /2, backButton.y+ backButton.height /2-5, "Back", GLUT_BITMAP_HELVETICA_12);
+			iText(textX, textY, "Back", GLUT_BITMAP_8_BY_13); // Smaller font when not hovered
 		}
+
 	}
 }
-// Draw the main menu screen
+
+// Draw the main menu screen 16 jan
 void drawMenu() {
 	iClear();
 	iShowImage(0, 0, screenSizeX, screenSizeY, menuBg);
@@ -69,9 +90,9 @@ void drawMenu() {
 	for (int i = 0; i < 4; i++) {
 		Button btn = buttons[i];
 
-		// Button background
+		// Draw button background
 		if (btn.isHovered) {
-			iSetColor(61, 111, 255);  // Hover color
+			iSetColor(0, 102, 204);  // Hover color
 			iFilledRectangle(btn.x - 10, btn.y - 5, btn.width + 20, btn.height + 10);
 		}
 		else {
@@ -79,30 +100,39 @@ void drawMenu() {
 			iFilledRectangle(btn.x, btn.y, btn.width, btn.height);
 		}
 
-		// Button text color
+		// Draw button text
 		iSetColor(255, 255, 255);  // White text
 
-		// Center text in button
-		int textWidth = 10 * strlen(buttonLabels[i]);  // Approximate width per character
+		// Calculate centered text position
+		int textWidth = 8 * strlen(buttonLabels[i]); // Approximate width per character
 		int textX = btn.x + (btn.width - textWidth) / 2;
-		int textY = btn.y + (btn.height / 2) - 5;
 
-		// Bold effect when hovered
+		int textHeight = 12; // Approximate text height for HELVETICA_18
+		int textY = btn.y + (btn.height - textHeight) / 2;
+
+		// Add bold effect when hovered
 		if (btn.isHovered) {
-			iText(textX, textY, buttonLabels[i], GLUT_BITMAP_HELVETICA_18);
+			iText(textX, textY, buttonLabels[i], GLUT_BITMAP_9_BY_15);
 		}
 		else {
-			iText(textX, textY, buttonLabels[i], GLUT_BITMAP_HELVETICA_12);
+			iText(textX, textY, buttonLabels[i], GLUT_BITMAP_8_BY_13
+				);
 		}
 	}
-
-	
 }
 
-// Draw the "About Us" screen
+
+// Draw the "About Us" screen 16 jan
 void drawAboutUs() {
 	iClear();
 	iShowImage(0, 0, screenSizeX, screenSizeY, aboutUsBg);
+	// Draw the title
+	int titleWidth = 12 * strlen("About Us");
+	int titleX = (screenSizeX - titleWidth) / 2;
+	int titleY = screenSizeY - 100;  // Slightly below the top
+
+	iSetColor(255, 255, 255);
+	iText(titleX, titleY, "About Us", GLUT_BITMAP_9_BY_15); //next pg chng
 
 	drawBackButton();
 }
@@ -160,12 +190,16 @@ void iPassiveMouseMove(int mx, int my) {
 	}
 }
 
-// Handle mouse clicks for navigation
+// Handle mouse clicks for navigation 16 jan
 void iMouse(int button, int state, int mx, int my) {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		for (int i = 0; i < 4; i++) {
 			if (mx >= buttons[i].x && mx <= buttons[i].x + buttons[i].width &&
 				my >= buttons[i].y && my <= buttons[i].y + buttons[i].height) {
+
+				// Play sound when a button is clicked
+				PlaySound("button sound.wav", NULL, SND_ASYNC);
+			
 				// Handle button clicks to change screens
 				if (i == 0) {
 					currentScreen = PLAY;  // Start the game
@@ -181,16 +215,21 @@ void iMouse(int button, int state, int mx, int my) {
 				}
 			}
 		}
-
+		// 
 		// Back to Menu (for "About Us" and "High Score" screens)
 		if (currentScreen == ABOUT_US || currentScreen == HIGH_SCORE || currentScreen == PLAY) {
 			if (mx >= backButton.x && mx <= backButton.x + backButton.width &&
 				my >= backButton.y && my <= backButton.y + backButton.height) {
+
+				// Play sound when the back button is clicked
+				PlaySound("button sound.wav", NULL, SND_ASYNC);
+
 				currentScreen = MENU;  // Go back to the main menu
 			}
 		}
 	}
 }
+
 
 void iMouseMove(int mx, int my) {
 	// Empty function to handle mouse dragging
@@ -229,7 +268,7 @@ int main() {
 
 	// Load background images
 	menuBg = iLoadImage("menu_bg.png");
-	aboutUsBg = iLoadImage("menu_bg.png");
+	aboutUsBg = iLoadImage("about us.png");
 	highScoreBg = iLoadImage("menu_bg.png");
 
 	initializeButtons();
